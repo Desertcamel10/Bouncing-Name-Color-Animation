@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="100%" height="100%" fill="black"/>
+  <text id="name" x="400" y="300" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle" dominant-baseline="middle">Hi, I'm Khadeer</text>
+  
+  <script type="text/javascript"><![CDATA[
+    const name = document.getElementById('name');
+    const svg = document.querySelector('svg');
+    let x = 400, y = 300;
+    let dx = 5, dy = 3;
+    const textWidth = 180;  // Approximate width of the text
+    const textHeight = 30;  // Approximate height of the text
+    
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+    
+    function createParticles(x, y) {
+      for (let i = 0; i < 10; i++) {
+        const particle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        particle.setAttribute('cx', x);
+        particle.setAttribute('cy', y);
+        particle.setAttribute('r', Math.random() * 3 + 2);
+        particle.setAttribute('fill', getRandomColor());
+        svg.appendChild(particle);
+        
+        const angle = Math.random() * 2 * Math.PI;
+        const speed = Math.random() * 4 + 1;
+        const dx = Math.cos(angle) * speed;
+        const dy = Math.sin(angle) * speed;
+        
+        function moveParticle() {
+          const currentX = parseFloat(particle.getAttribute('cx'));
+          const currentY = parseFloat(particle.getAttribute('cy'));
+          particle.setAttribute('cx', currentX + dx);
+          particle.setAttribute('cy', currentY + dy);
+        }
+        
+        setTimeout(() => {
+          svg.removeChild(particle);
+        }, 1000);
+        
+        setInterval(moveParticle, 16);
+      }
+    }
+    
+    function animate() {
+      let colorChanged = false;
+      
+      if (x + dx > 800 - textWidth / 2 || x + dx < textWidth / 2) {
+        dx = -dx;
+        x = Math.max(textWidth / 2, Math.min(800 - textWidth / 2, x + dx));
+        colorChanged = true;
+      }
+      
+      if (y + dy > 600 - textHeight / 2 || y + dy < textHeight / 2) {
+        dy = -dy;
+        y = Math.max(textHeight / 2, Math.min(600 - textHeight / 2, y + dy));
+        colorChanged = true;
+      }
+      
+      if (colorChanged) {
+        name.setAttribute('fill', getRandomColor());
+        createParticles(x, y);
+      }
+      
+      x += dx / 3;
+      y += dy / 3;
+      name.setAttribute('x', x);
+      name.setAttribute('y', y);
+      
+      requestAnimationFrame(animate);
+    }
+    
+    animate();
+  ]]></script>
+</svg>
+
